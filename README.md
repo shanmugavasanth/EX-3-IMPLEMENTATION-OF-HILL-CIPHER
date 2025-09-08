@@ -1,31 +1,114 @@
-## EX : 3 IMPLEMENTATION OF HILL CIPHER
-
+# HILL CIPHER
+EX. NO: 3 
+IMPLEMENTATION OF HILL CIPHER
 ## AIM:
+## To write a C program to implement the hill cipher substitution techniques.
 
-To develop a simple C program to implement Hill Cipher.
+## DESCRIPTION:
 
-## DESIGN STEPS:
+Each letter is represented by a number modulo 26. Often the simple scheme A = 0, B = 1... Z = 25, is used, but this is not an essential feature of the cipher. To encrypt a message, each block of n letters is  multiplied by an invertible n × n matrix, against modulus 26. To decrypt the message, each block is multiplied by the inverse of the m trix used for encryption. The matrix used for encryption is the cipher key, and it should be chosen randomly from the set of invertible n × n matrices (modulo 26).
 
-Step 1:
+## ALGORITHM:
 
-Design of Hill Cipher algorithnm
+STEP-1: Read the plain text and key from the user. 
 
-Step 2:
+STEP-2: Split the plain text into groups of length three. 
 
-Implementation using C or pyhton code
+STEP-3: Arrange the keyword in a 3*3 matrix.
 
-Step 3:
+STEP-4: Multiply the two matrices to obtain the cipher text of length three.
 
-1.	Convert each letter of the message to a number (A = 0, B = 1, ..., Z = 25) and divide the message into blocks of size n.
-2.	Select an invertible n × n matrix as the cipher key (modulo 26 for the English alphabet).
-3.	Multiply each block of n letters by the cipher key matrix (modulo 26) to get the encrypted numbers.
-4.	Convert the encrypted numbers back into letters using the reverse of step 1.
-5.	Multiply the encrypted blocks by the inverse of the cipher key matrix (modulo 26) to recover the original message.
-6.	Ensure the key matrix is invertible (mod 26) for decryption to be possible.
+STEP-5: Combine all these groups to get the complete cipher text.
+
+## PROGRAM 
+```
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define SIZE 3  
 
 
-## PROGRAM:
+void multiplyMatrix(int key[SIZE][SIZE], int text[SIZE], int result[SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        result[i] = 0;
+        for (int j = 0; j < SIZE; j++) {
+            result[i] += key[i][j] * text[j];
+        }
+        result[i] = result[i] % 26;
+    }
+}
 
-## OUTPUT:
+int main() {
+    char plainText[100];
+    int key[SIZE][SIZE];
+    char cipherText[100] = "";
+    int len;
 
-## RESULT:
+  
+    printf("Enter the plain text: ");
+    fgets(plainText, sizeof(plainText), stdin);
+    plainText[strcspn(plainText, "\n")] = '\0';
+
+ 
+    for (int i = 0; plainText[i]; i++) {
+        if (isalpha(plainText[i]))
+            plainText[i] = toupper(plainText[i]);
+    }
+
+  
+    char temp[100];
+    int idx = 0;
+    for (int i = 0; plainText[i]; i++) {
+        if (isalpha(plainText[i])) {
+            temp[idx++] = plainText[i];
+        }
+    }
+    temp[idx] = '\0';
+    strcpy(plainText, temp);
+
+  
+    len = strlen(plainText);
+    while (len % 3 != 0) {
+        plainText[len++] = 'X';
+    }
+    plainText[len] = '\0';
+
+  
+    printf("Enter the 3x3 key matrix (row by row):\n");
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            scanf("%d", &key[i][j]);
+        }
+    }
+
+   
+    for (int i = 0; i < len; i += 3) {
+        int textVec[SIZE], result[SIZE];
+
+    
+        for (int j = 0; j < SIZE; j++) {
+            textVec[j] = plainText[i + j] - 'A';
+        }
+
+    
+        multiplyMatrix(key, textVec, result);
+
+     
+        for (int j = 0; j < SIZE; j++) {
+            char c = result[j] + 'A';
+            strncat(cipherText, &c, 1);
+        }
+    }
+
+ 
+    printf("Cipher Text: %s\n", cipherText);
+
+    return 0;
+}
+```
+## OUTPUT
+<img width="733" height="591" alt="image" src="https://github.com/user-attachments/assets/07da1dba-3fe4-467e-a118-b00faca5ce53" />
+
+## RESULT
+Thus the implementation of Hill Cipher text is executed successfully.
